@@ -1,0 +1,9 @@
+streamlit
+plotly
+pandas
+firebase-admin
+textblob
+wordcloud
+streamlit-autorefresh
+numpy
+matplotlib
