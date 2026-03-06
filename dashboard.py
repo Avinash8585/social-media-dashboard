@@ -87,11 +87,15 @@ animation:ticker 25s linear infinite;
 """, unsafe_allow_html=True)
 
 # ================= FIREBASE =================
+
+firebase_config = dict(st.secrets["firebase"])
+
 if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_key.json")
+    cred = credentials.Certificate(firebase_config)
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
 docs = db.collection("posts").stream()
 data = [doc.to_dict() for doc in docs]
 
