@@ -166,6 +166,37 @@ with col5:
     kpi("Engagement Index",round(df["engagement_index"].mean(),2))
 
 st.divider()
+# ================= GRAPHS =================
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("📊 Engagement by Topic")
+    fig1 = px.bar(df, x="topic", y="engagement", color="topic")
+    st.plotly_chart(fig1, use_container_width=True)
+
+with col2:
+    st.subheader("📈 Engagement Over Time")
+    fig2 = px.line(df, x="timestamp", y="engagement", markers=True)
+    st.plotly_chart(fig2, use_container_width=True)
+
+# ================= SENTIMENT =================
+
+st.subheader("😊 Sentiment Distribution")
+fig3 = px.histogram(df, x="sentiment", nbins=20)
+st.plotly_chart(fig3, use_container_width=True)
+
+# ================= LIVE FEED =================
+
+st.subheader("📡 Live Activity Feed")
+
+for _, row in df.head(10).iterrows():
+    st.markdown(f"""
+    <div class="live-card">
+        <b>{row['user']}</b> — #{row['topic']}<br>
+        ❤️ {row['likes']} | 💬 {row['comments']} | 🔁 {row['shares']}
+    </div>
+    """, unsafe_allow_html=True)
 
 # ================= (REST OF YOUR CODE UNCHANGED) =================
 # 👉 everything below remains EXACT SAME
