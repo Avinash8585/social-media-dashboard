@@ -85,19 +85,27 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# 🔥 CACHE + LIMIT FIX
+# 🔥 CACHE + LIMIT FIX + SAFE DEBUG
 @st.cache_data(ttl=30)
 def load_data():
-    docs = db.collection("posts") \
-        .order_by("timestamp", direction=firestore.Query.DESCENDING) \
-        .limit(20) \
-        .stream()
-    return [doc.to_dict() for doc in docs]
+    try:
+        docs = db.collection("posts") \
+            .order_by("timestamp", direction=firestore.Query.DESCENDING) \
+            .limit(20) \
+            .stream()
+
+        data = [doc.to_dict() for doc in docs]
+
+        return data
+
+    except Exception as e:
+        st.error(f"Firebase Error: {e}")
+        return []
 
 data = load_data()
 
 if not data:
-    st.warning("Waiting for streaming data...")
+    st.error("❌ No data received from Firebase")
     st.stop()
 
 df = pd.DataFrame(data)
